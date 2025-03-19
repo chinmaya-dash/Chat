@@ -1,7 +1,7 @@
-# Wori Backend
+# chatshare Backend
 
 ## Project Overview
-This is the backend server for **Wori**, a conversational assistant that helps users engage in meaningful chats, generate daily questions, and connect with contacts. The server is built with Node.js, Express.js, and PostgreSQL, using a clean and modular architecture.
+This is the backend server for **chatshare**, a conversational assistant that helps users engage in meaningful chats, generate daily questions, and connect with contacts. The server is built with Node.js, Express.js, and PostgreSQL, using a clean and modular architecture.
 
 ## Setup Instructions
 
