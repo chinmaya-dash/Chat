@@ -1,3 +1,4 @@
+import 'package:chatshare/core/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:chatshare/features/chat/presentation/pages/chat_page.dart';
@@ -13,7 +14,6 @@ class ContactsPage extends StatefulWidget {
 }
 
 class _ContactsPageState extends State<ContactsPage> {
-
   @override
   void initState() {
     super.initState();
@@ -24,56 +24,69 @@ class _ContactsPageState extends State<ContactsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Contacts'),
+        title: Text(
+          'Contacts',
+          style: TextStyle(color: Color(0xFFFFFFFF)), // White text color
+        ),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
+
       body: BlocListener<ContactsBloc, ContactsState>(
         listener: (context, state) async {
           final contactsBloc = BlocProvider.of<ContactsBloc>(context);
 
-          if(state is ConversationReady) {
+          if (state is ConversationReady) {
             var res = await Navigator.push(
               context,
-              MaterialPageRoute(builder: (context)=>
-                  ChatPage(
-                    conversationId: state.conversationId,
-                    mate: state.contact.username,
-                    profileImage: state.contact.profileImage,
-                  )
-              )
+              MaterialPageRoute(
+                builder:
+                    (context) => ChatPage(
+                      conversationId: state.conversationId,
+                      mate: state.contact.username,
+                      profileImage: state.contact.profileImage,
+                    ),
+              ),
             );
-            if(res == null){
+            if (res == null) {
               contactsBloc.add(FetchContacts());
             }
           }
         },
         child: BlocBuilder<ContactsBloc, ContactsState>(
-          builder: (context, state){
-            if(state is ContactsLoading){
-              return Center(child: CircularProgressIndicator(),);
-            }
-            else if(state is ContactsLoaded) {
+          builder: (context, state) {
+            if (state is ContactsLoading) {
+              return Center(child: CircularProgressIndicator());
+            } else if (state is ContactsLoaded) {
               return ListView.builder(
-                  itemCount: state.contacts.length,
-                  itemBuilder: (context, index){
-                    final contact = state.contacts[index];
-                    return ListTile(
-                      title: Text(contact.username),
-                      subtitle: Text(contact.email),
-                      onTap: (){
-                        BlocProvider.of<ContactsBloc>(context).add(
-                          CheckOrCreateConversation(contact.id, contact),
-                        );
-                      },
-                    );
-                  }
+                itemCount: state.contacts.length,
+                itemBuilder: (context, index) {
+                  final contact = state.contacts[index];
+                  return ListTile(
+                    title: Text(
+                      contact.username,
+                      style: TextStyle(
+                        color: DefaultColors.whiteText,
+                      ), // Using imported whiteText color
+                    ),
+                    subtitle: Text(
+                      contact.email,
+                      style: TextStyle(
+                        color: DefaultColors.greyText,
+                      ), // Using imported greyText color
+                    ),
+                    onTap: () {
+                      BlocProvider.of<ContactsBloc>(
+                        context,
+                      ).add(CheckOrCreateConversation(contact.id, contact));
+                    },
+                  );
+                },
               );
+            } else if (state is ContactsError) {
+              return Center(child: Text(state.message));
             }
-            else if(state is ContactsError) {
-              return Center(child: Text(state.message),);
-            }
-            return Center(child: Text('No contacts found'),);
+            return Center(child: Text('No contacts found'));
           },
         ),
       ),
@@ -84,40 +97,51 @@ class _ContactsPageState extends State<ContactsPage> {
     );
   }
 
-  void _showAddContactDialog(BuildContext context){
+  void _showAddContactDialog(BuildContext context) {
     final emailController = TextEditingController();
 
     showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          backgroundColor:  Theme.of(context).scaffoldBackgroundColor,
-          title: Text('Add contact',style: Theme.of(context).textTheme.bodyMedium,),
-          content: TextField(
-            controller: emailController,
-            decoration: InputDecoration(hintText: 'Enter contact email',hintStyle: Theme.of(context).textTheme.bodyMedium,),
-          ),
-          actions: [
-            TextButton(
-                onPressed: (){
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            title: Text(
+              'Add contact',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            content: TextField(
+              controller: emailController,
+              decoration: InputDecoration(
+                hintText: 'Enter contact email',
+                hintStyle: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
                   Navigator.pop(context);
                 },
-                child: Text('Cancel')
-            ),
-            ElevatedButton(
-                onPressed: (){
+                child: Text('Cancel'),
+              ),
+              ElevatedButton(
+                onPressed: () {
                   final email = emailController.text.trim();
-                  if(email.isNotEmpty) {
-                    BlocProvider.of<ContactsBloc>(context).add(AddContact(email));
+                  if (email.isNotEmpty) {
+                    BlocProvider.of<ContactsBloc>(
+                      context,
+                    ).add(AddContact(email));
                     Navigator.pop(context);
                   }
                 },
                 child: Text(
                   'Add',
-                  style: Theme.of(context).textTheme.bodyMedium,
-                )
-            )
-          ],
-        )
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(color: Color(0xFF31372D)),
+                ),
+              ),
+            ],
+          ),
     );
   }
 }

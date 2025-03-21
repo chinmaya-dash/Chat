@@ -7,6 +7,8 @@ export const fetchAllConversationsByUserId = async (req: Request, res: Response)
     if(req.user){
         userId = req.user.id;
     }
+    console.log(userId);
+    
 
     try{
         const result = await pool.query(
@@ -34,15 +36,15 @@ export const fetchAllConversationsByUserId = async (req: Request, res: Response)
                 Limit 1
             ) m ON true
             Where c.participant_one = $1 or c.participant_two = $1
-            Order by m.created_at DESC;
+            ORDER BY COALESCE(m.created_at, c.created_at) DESC;
             `,
             [userId]
         );
-        
+        // console.log(result.rows);
         res.json(result.rows);
     }
-    catch(e){
-        res.status(500).json({error: 'Failed to fetch conversations'})
+    catch(err){
+        res.status(500).json({error: 'Failed to fetch conversations',meg:err})
     }
 }
 

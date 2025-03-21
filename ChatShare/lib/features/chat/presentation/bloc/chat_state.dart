@@ -8,7 +8,7 @@ class ChatLoadingState extends ChatState{}
 class ChatLoadedState extends ChatState{
   final List<MessageEntity> messages;
   ChatLoadedState(this.messages);
-}
+} 
 
 class ChatErrorState extends ChatState{
   final String message;

@@ -11,19 +11,23 @@ class SocketService {
   late IO.Socket _socket;
   final _storage = FlutterSecureStorage();
 
-  SocketService._internal(){
+  SocketService._internal() {
     initSocket();
   }
 
   Future<void> initSocket() async {
     String token = await _storage.read(key: 'token') ?? '';
+    String serverUrl = 'http://192.168.189.126:4000'; // Default URL
+    // if (serverUrl.isEmpty) {
+    //   serverUrl = 'http://192.168.189.126:4000'; // Fallback
+    // }
     _socket = IO.io(
-      'http://192.168.189.126:4000',
+      serverUrl,
       IO.OptionBuilder()
-        .setTransports(['websocket'])
-        .disableAutoConnect()
-        .setExtraHeaders({'Authorization': 'Bearer $token'})
-        .build(),
+          .setTransports(['websocket'])
+          .disableAutoConnect()
+          .setExtraHeaders({'Authorization': 'Bearer $token'})
+          .build(),
     );
 
     _socket.connect();

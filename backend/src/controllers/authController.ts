@@ -20,14 +20,14 @@ export const register = async(req: Request, res: Response) => {
         // const { username, email, password } = req.body;
         const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
         // Insert user into DB
-        console.log(username,email,password);
+        // console.log(username,email,password);
         const result = await pool.query(
             `INSERT INTO users (username, email, password) 
              VALUES ($1, $2, $3) 
              RETURNING *;`,
             [username, email, hashedPassword]
         );
-        console.log(result);
+        // console.log(result);
         
         const user = result.rows[0];
         // res.json(result);

@@ -13,7 +13,7 @@ class FontSizes {
 }
 
 class DefaultColors {
-  static const Color greyText = Color(0xFF8389C9);
+  static const Color greyText = Color.fromARGB(255, 154, 160, 232);
   static const Color whiteText = Color(0xFFFFFFFF);
   static const Color senderMessage = Color(0xFF7A8194);
   static const Color receiverMessage = Color(0xFF51574C);
